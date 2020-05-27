@@ -1,5 +1,5 @@
-#ifndef STRUCTURES__H
-#define STRUCTURES__H
+#ifndef STRUCTURES_H
+#define STRUCTURES_H
 
 //matrice creuse
 /*
@@ -7,17 +7,11 @@ stocker les éléments non nuls
 uniquement i,j P(i,j)
 */
 
-
-typedef struct node{
+typedef struct node_t{
     int column;
     int row;
     double val;
-    struct node * next;
-}node_t;
-
-
-
-
-
+    struct node_t * next;
+} node_t;
 
 #endif

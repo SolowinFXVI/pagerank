@@ -1,23 +1,30 @@
-CXX		  := gcc
-CXX_FLAGS := -Wall -Wextra -std=c18 -ggdb
+CXX			:=	gcc
+CXX_FLAGS	:=	-Wall	-Wextra	-std=c17	-g	-O2
 
-BIN		:= bin
-SRC		:= src
-INCLUDE	:= include
-LIB		:= lib
+BIN		:=	bin
+SRC		:=	src
+INCLUDE	:=	include
+LIB		:=	lib
 
 LIBRARIES	:=
-EXECUTABLE	:= main
+EXECUTABLE	:=	main
 
 
-all: $(BIN)/$(EXECUTABLE)
+all:	clean	$(BIN)/$(EXECUTABLE)
 
-run: clean all
-	clear
+run:	clean	all
 	./$(BIN)/$(EXECUTABLE)
 
-$(BIN)/$(EXECUTABLE): $(SRC)/*.c
-	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES)
+$(BIN)/$(EXECUTABLE):	$(SRC)/*.c
+	$(CXX)	$(CXX_FLAGS)	-I$(INCLUDE)	-L$(LIB)	$^	-o	$@	$(LIBRARIES)
+
+test:	clean	all
+	valgrind	--vgdb=no	./$(BIN)/$(EXECUTABLE)
+
+
+testdeep:	clean	all
+	valgrind	--leak-check=full	--show-leak-kinds=all	--track-origins=yes	--leak-resolution=med	--vgdb=no	./$(BIN)/$(EXECUTABLE)
+
 
 clean:
-	-rm $(BIN)/*
+	-rm	$(BIN)/*
