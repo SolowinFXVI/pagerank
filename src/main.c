@@ -4,10 +4,6 @@
 #include <sys/time.h>
 #include "../include/structures.h"
 
-
-//TODO phase 3
-//TODO lecture avec fscanf()
-
 double SEUIL=0.000001;
 
 int DEBUG = 0; //displays matrix
@@ -19,7 +15,7 @@ static int nodeCount = 0;
 static int totalNodes = 0;
 static int shown = 0;
 
-void insert_fin(node_t P[], double val, int column, int row){
+/*void insert_fin(node_t P[], double val, int column, int row){
     
     node_t * newNode = malloc(sizeof(node_t));
     if(newNode == NULL){
@@ -84,13 +80,42 @@ void insert_fin(node_t P[], double val, int column, int row){
         shown++;
     }
     if(DEBUG)printf("Added node : %d \n", nodeCount);
-}
+}*/
 
 void insert_head(node_t P[], double val, int column, int row){
-    P[column].column= column;
-    P[column].row=row;
-    P[column].val = val;
-    P[column].next = NULL;
+    if(P[column].next == NULL){
+        if(P[column].row == -1){ //vide
+            P[column].column= column;
+            P[column].row=row;
+            P[column].val = val;
+            P[column].next = NULL;
+        }
+        else{ //pas de suivant
+            node_t * newNode = malloc(sizeof(node_t));
+            if(newNode == NULL){
+            fprintf(stderr, "Unable to allocate memory for new node\n");
+            exit(-1);
+            }
+            newNode->column = column;
+            newNode->row = row;
+            newNode->val = val;
+            newNode->next = NULL;
+            P[column].next = newNode;
+        }
+        
+    }
+    else{//suivants
+        node_t * newNode = malloc(sizeof(node_t));
+        if(newNode == NULL){
+            fprintf(stderr, "Unable to allocate memory for new node\n");
+            exit(-1);
+        }
+        newNode->column = column;
+        newNode->row = row;
+        newNode->val = val;
+        newNode->next = P[column].next;
+        P[column].next = newNode;
+    }    
     nodeCount++;
         if(((nodeCount * 100)/totalNodes == 10) && (shown==0)){
         printf("Loading 10%% \n");
@@ -197,14 +222,14 @@ void init_matrix(int matrix_size,node_t P[],char * path){
         {
             fscanf(file, "%d %lf", &column, &val);
             if(DEBUG_READ)printf("decider:col:%d,row:%d,val:%lf \n", column-1, row-1, val);
-            if(P[column-1].row == -1){
-                if(DEBUG_READ)printf("going for the head \n");
+            //if(P[column-1].row == -1){
+                //if(DEBUG_READ)printf("going for the head \n");
                 insert_head(P,val, column-1, row-1);
-            }
+            /*}
             else{
                 if(DEBUG_READ)printf("going for the tail \n");
                 insert_fin(P,val, column-1, row-1);
-            }
+            }*/
             
         }
     }
@@ -425,7 +450,7 @@ void run(char * path){
     if(DEBUG)print_matrix(matrix_size,matrix_size,P);
     printf("Matrix size %d\n", matrix_size);
     init_PI(matrix_size,PI);
-    if(DEBUG)print_G(matrix_size,G);
+    //if(DEBUG)print_G(matrix_size,G);
     if(DEBUG)print_matrix(matrix_size,matrix_size,P);
     for(int j = 0; j < matrix_size; j++){
         G[j] = PI[j];
@@ -460,9 +485,9 @@ int main(){
     printf("STARTING \n");
     //char * path = "./res/GraphesWebTest/web1.txt";
     //char * path = "./res/Stanford.txt/Stanford.txt";
-    char * path = "./res/wb_cs_stanford.txt/wb-cs-stanford.txt";
+    //char * path = "./res/wb_cs_stanford.txt/wb-cs-stanford.txt";
     //char * path = "./res/Stanford_BerkeleyV2.txt/Stanford_BerkeleyV2.txt";
-    //char * path = "./res/wikipedia_20051105V2.txt/wikipedia-20051105V2.txt";
+    char * path = "./res/wikipedia_20051105V2.txt/wikipedia-20051105V2.txt";
     //char * path = "./res/wb_edu.txt/wb-edu.txt";
     struct timeval tv1, tv2;
     gettimeofday(&tv1, NULL);
