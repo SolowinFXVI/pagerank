@@ -1,5 +1,5 @@
 CXX			:=	gcc
-CXX_FLAGS	:=	-Wall	-Wextra	-std=c17	-g	-O2
+CXX_FLAGS	:=	-O3	-Wall	-Wextra	-std=c17	
 
 BIN		:=	bin
 SRC		:=	src

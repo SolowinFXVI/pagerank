@@ -15,73 +15,10 @@ static int nodeCount = 0;
 static int totalNodes = 0;
 static int shown = 0;
 
-/*void insert_fin(node_t P[], double val, int column, int row){
-    
-    node_t * newNode = malloc(sizeof(node_t));
-    if(newNode == NULL){
-        fprintf(stderr, "Unable to allocate memory for new node\n");
-        exit(-1);
-    }
-    newNode->column = column;
-    newNode->row = row;
-    newNode->val = val;
-    newNode->next = NULL;
 
-    
-    if(P[column].next != NULL){
-        node_t * iterator = P[column].next;
-        while(iterator->next != NULL){
-            iterator = iterator->next;
-        }
-        iterator->next = newNode;
-    }
-    else{
-        P[column].next = newNode;
-    }
-    nodeCount++;
-    if(((nodeCount * 100)/totalNodes == 10) && (shown==0)){
-        printf("Loading 10%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 20) && (shown==1)){
-        printf("Loading 20%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 30) && (shown==2)){
-        printf("Loading 30%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 40) && (shown==3)){
-        printf("Loading 40%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 50) && (shown==4)){
-        printf("Loading 50%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 60) && (shown==5)){
-        printf("Loading 60%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 70) && (shown==6)){
-        printf("Loading 70%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 80) && (shown==7)){
-        printf("Loading 80%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 90) && (shown==8)){
-        printf("Loading 90%% \n");
-        shown++;
-    }
-    else if(((nodeCount * 100)/totalNodes == 99) && (shown==9)){
-        printf("Loading 100%% \n");
-        shown++;
-    }
-    if(DEBUG)printf("Added node : %d \n", nodeCount);
-}*/
-
+/*
+* Insert en seconde position les valeurs.
+*/
 void insert_head(node_t P[], double val, int column, int row){
     if(P[column].next == NULL){
         if(P[column].row == -1){ //vide
@@ -160,6 +97,9 @@ void insert_head(node_t P[], double val, int column, int row){
     if(DEBUG)printf("filled existing node : %d \n", nodeCount);
 }
 
+/*
+* Affiche la liste des nodes d'une colonne.
+*/
 void print_list(node_t * head){
     node_t * current = head;
     while (current != NULL) {
@@ -169,6 +109,9 @@ void print_list(node_t * head){
     printf("NULL");
 }
 
+/*
+* Récupère la taille de la matrice depuis le fichier.
+*/
 int get_matrix_size(char * path){
     int matrix_size = -1;
     int dummy = -1;
@@ -183,6 +126,9 @@ int get_matrix_size(char * path){
     return matrix_size;
 }
 
+/*
+* Récupère le nombre de nodes depuis le fichier.
+*/
 int get_totalNodes(char * path){
     int dummy = -1;
     int nodes = -1;
@@ -197,6 +143,9 @@ int get_totalNodes(char * path){
     return nodes;
 }
 
+/*
+* Initialise la matrice avec les données du fichier.
+*/
 void init_matrix(int matrix_size,node_t P[],char * path){
     FILE *file = fopen(path,"r");
     if(file==NULL){
@@ -222,22 +171,15 @@ void init_matrix(int matrix_size,node_t P[],char * path){
         {
             fscanf(file, "%d %lf", &column, &val);
             if(DEBUG_READ)printf("decider:col:%d,row:%d,val:%lf \n", column-1, row-1, val);
-            //if(P[column-1].row == -1){
-                //if(DEBUG_READ)printf("going for the head \n");
                 insert_head(P,val, column-1, row-1);
-            /*}
-            else{
-                if(DEBUG_READ)printf("going for the tail \n");
-                insert_fin(P,val, column-1, row-1);
-            }*/
-            
         }
     }
-    
-
     fclose(file);
 }
 
+/*
+* Affiche la matrice.
+*/
 void print_matrix(int matrix_x_size, int y,node_t P[]){
     printf("\n############## MATRIX ###############\n");
     for (int x = 0; x < matrix_x_size; x++)
@@ -248,6 +190,9 @@ void print_matrix(int matrix_x_size, int y,node_t P[]){
     printf("############## EOF MATRIX ###############\n");
 }
 
+/*
+* Initialisation du vecteur PI.
+*/
 void init_PI(int matrix_size, double PI[]){
     for(int i = 0; i < matrix_size; i++){
         PI[i]=1.0/matrix_size;
@@ -255,6 +200,9 @@ void init_PI(int matrix_size, double PI[]){
     }
 }
 
+/*
+* Affichage du résultat.
+*/
 void print_G(int matrix_size, double G[]){
     printf("\n######## PI #########\n");
     for(int i = 0; i < matrix_size; i++){
@@ -264,12 +212,13 @@ void print_G(int matrix_size, double G[]){
 }
 
 
-
+/*
+* Multiplication pour l'algorithme des puissances.
+*/
 void compute(int matrix_size, int y, node_t P[], double G[]){ //PI * P
     double res = 0.0;
     double res_prec = 0.0;
     double * TMP = malloc(sizeof(double) * matrix_size);
-    //double TMP[matrix_size];
     for (int k = 0; k < matrix_size; k++)
     {
         TMP[k]=0.0;
@@ -304,6 +253,9 @@ void compute(int matrix_size, int y, node_t P[], double G[]){ //PI * P
     free(TMP);
 }
 
+/*
+* Test si résultat converge.
+*/
 int compare_prev(int matrix_size, double PREV_G[], double G[]){
     for (int i = 0; i < matrix_size; i++)
     {
@@ -315,7 +267,9 @@ int compare_prev(int matrix_size, double PREV_G[], double G[]){
 }
 
 
-
+/*
+* Nettoyage de la matrice principale.
+*/
 void free_matrix(node_t P[], int matrix_size) {
     
     for (int i = matrix_size-1; i >= 0; i--) {
@@ -341,10 +295,16 @@ void free_matrix(node_t P[], int matrix_size) {
     }
 }
 
+/*
+* Allocation de la matrice.
+*/
 node_t * alloc_Matrix(int matrix_size){
     return malloc(matrix_size * sizeof(node_t));
 }
 
+/*
+* Mise à zero des éléments du tableau formant la base de la matrice creuse.
+*/
 void zero_matrix(node_t P[], int matrix_size){
     for (int i = 0; i < matrix_size; i++)
     {
@@ -352,13 +312,12 @@ void zero_matrix(node_t P[], int matrix_size){
         P[i].row=-1;
         P[i].val=-1;
         P[i].next=NULL;
-        /*printf("column %d",P[i].column);
-        printf("row %d",P[i].row);
-        printf("val %lf",P[i].val);
-        printf("next %d",P[i].next);*/
     }
 }
 
+/*
+* Multiplication par alpha. //phase 3.
+*/
 void times_alpha(int matrix_size, double G[] , double alpha){
     for (int i = 0; i < matrix_size; i++)
     {
@@ -366,6 +325,9 @@ void times_alpha(int matrix_size, double G[] , double alpha){
     }
 }
 
+/*
+* Calcul de f. //phase 3
+*/
 void calculate_f(int matrix_size, node_t P[], double G[], double blob_1[]){
     double res = 0.0;
     for(int i= 0 ; i < matrix_size; i++){
@@ -387,6 +349,9 @@ void calculate_f(int matrix_size, node_t P[], double G[], double blob_1[]){
     }
 }
 
+/*
+* Calcul de alpha(xf^t)e + ((1-alpha)/N)*e  //phase 3
+*/
 void addBlob(int matrix_size, double alpha,node_t P[], double G[], double PREV_G[]){
     double * blob_1 = malloc(sizeof(double) * matrix_size);
     double * blob_2 = malloc(sizeof(double) * matrix_size);
@@ -427,6 +392,9 @@ void addBlob(int matrix_size, double alpha,node_t P[], double G[], double PREV_G
     free(blobs);
 }
 
+/*
+* Fonction principale.
+*/
 void run(char * path){
     struct timeval tv3, tv4;
     double alpha = 0.85;
@@ -456,7 +424,8 @@ void run(char * path){
         G[j] = PI[j];
         PREV_G[j] = PI[j];
     }
-    gettimeofday(&tv3, NULL);
+
+    gettimeofday(&tv3, NULL); //début du chronomètre
     do
     {
         for(int i = 0; i < matrix_size; i++){
@@ -469,9 +438,11 @@ void run(char * path){
         if(ite % 250 == 0){
             printf("Iteration : %d \n", ite);
         }
-    }while ((compare_prev(matrix_size,PREV_G, G) == 1) && (ite < 10000)); //TODO change to 10000
-    gettimeofday(&tv4, NULL);
-    //print_G(matrix_size,G);
+    }while ((compare_prev(matrix_size,PREV_G, G) == 1) && (ite < 10000));
+    gettimeofday(&tv4, NULL); //fin du chronomètre
+
+
+    print_G(matrix_size,G);
     printf("%d iterations\n", ite);
     printf("Compute time = %f seconds \n", (double) (tv4.tv_usec - tv3.tv_usec)/ 1000000 + (double) (tv4.tv_sec - tv3.tv_sec));
     free_matrix(P,matrix_size);
@@ -483,18 +454,23 @@ void run(char * path){
 
 int main(){
     printf("STARTING \n");
+
+    //Choix du fichier
     //char * path = "./res/GraphesWebTest/web1.txt";
     //char * path = "./res/Stanford.txt/Stanford.txt";
     //char * path = "./res/wb_cs_stanford.txt/wb-cs-stanford.txt";
     //char * path = "./res/Stanford_BerkeleyV2.txt/Stanford_BerkeleyV2.txt";
-    char * path = "./res/wikipedia_20051105V2.txt/wikipedia-20051105V2.txt";
-    //char * path = "./res/wb_edu.txt/wb-edu.txt";
+    //char * path = "./res/wikipedia_20051105V2.txt/wikipedia-20051105V2.txt";
+    char * path = "./res/wb_edu.txt/wb-edu.txt";
+    //char * path = "./res/large.txt";
+    //char * path = "./res/moyen.txt";
+    //char * path = "./res/petit.txt";
     struct timeval tv1, tv2;
-    gettimeofday(&tv1, NULL);
+
+    gettimeofday(&tv1, NULL); //début du chronomètre.
     run(path);
-    gettimeofday(&tv2, NULL);
+    gettimeofday(&tv2, NULL); //fin du chronomètre.
+
     printf("Execution time = %f seconds \n", (double) (tv2.tv_usec - tv1.tv_usec)/ 1000000 + (double) (tv2.tv_sec - tv1.tv_sec));
     exit(0);
 }
-
-//TODO verifier que chaque ligne est stocastique
